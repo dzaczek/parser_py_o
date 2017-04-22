@@ -13,27 +13,18 @@ class FilesName:
         print self.filenamelist
     def  ReturnTuple(self):
         return self.filenamelist
-class Parser:
-    def __init__(self, filename):
-        self.filname=filename
-        print self.filname
-        self.fcat=self.Mreadfile()
-        self.cutter()
-    def Mreadfile(self):
-        self.file=open(self.filname,"r")
-        self.data=self.file.read()
-        self.file.close()
-        return self.data
-    def cutter(self):
-        print self.fcat
-        #for line in self.fcat:
-        
-        self.abc=re.search(regex, self.fcat,re.M|re.I)
-        print self.abc.group(1),self.abc.group(2)
-            #Login:\s+(\S+)\s+Account\s+decription:\s+(.*)\n
+
+class UserIndex:
+        def __init__(self, username=None,comment=None,servername=None):
+            self.username=username
+            self.comment=comment
+            self.servername=servername
+
+        def displayuser(self):
+            print self.username+" "+self.comment+" "+self.servername
 
 
-class IterParser(FilesName,Parser):
+class IterParser(FilesName, UserIndex):
     def __init__(self, patch):
         self.start1=FilesName(patch)
         self.filelist=self.start1.ReturnTuple()
@@ -44,10 +35,30 @@ class IterParser(FilesName,Parser):
     def  iterfillist(self):
          for indexm, patchvar in enumerate(self.filelist):
              print indexm, patchvar
-             self.start8=Parser(patchvar)
-             self.appendserv(self.nameserver(patchvar))
+             self.workservername=self.nameserver(patchvar)
+             self.cutter(self.Mreadfile(patchvar),self.workservername)
+             self.appendserv(self.workservername)
 
              #self.UserList.append(UserIndex())
+    def Mreadfile(self,filename):
+        self.file=open(filename,"r")
+        self.data=self.file.read()
+        self.file.close()
+        return self.data
+
+    def add_user(self,user,note,servername):
+        self.UserList.append(UserIndex(user,note,servername))
+
+    def cutter(self, data,servn):
+        self.regex="Login:\s+(\S+)\s+Account\s+decription:\s+(.*)"
+        for line in data.splitlines():
+            self.abc=re.search(self.regex,line)
+            if self.abc:
+                self.add_user(self.abc.group(1),self.abc.group(2),servn)
+                print self.abc
+                #print abc.group()
+                print self.abc.group(1), self.abc.group(2),servn
+
 
     def appendserv(self,servername):
         self.serversc.append(servername)
@@ -61,15 +72,6 @@ class IterParser(FilesName,Parser):
 
     def nameserver(self, line):
         return os.path.basename(line[:line.rfind('.')])
-
-class UserIndex:
-        def __init__(self, username=None,servername=None,comment=None):
-            self.username=username
-            self.comment=comment
-            self.servername=servername
-
-        def dispalyuser(self):
-            print username+" "+comment+" "+servername
 
 
 #Startapp=FilesName("logs")
