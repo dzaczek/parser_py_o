@@ -1,4 +1,14 @@
 #!/usr/bin/python
+
+
+# ██████   █████  ██████  ███████ ███████ ██████
+# ██   ██ ██   ██ ██   ██ ██      ██      ██   ██
+# ██████  ███████ ██████  ███████ █████   ██████
+# ██      ██   ██ ██   ██      ██ ██      ██   ██
+# ██      ██   ██ ██   ██ ███████ ███████ ██   ██
+
+
+
 import re
 import glob
 import os
@@ -25,6 +35,14 @@ class FilesName:
         return self.filenamelist
 
 
+        # ██    ██ ███████ ███████ ██████  ███████
+        # ██    ██ ██      ██      ██   ██ ██
+        # ██    ██ ███████ █████   ██████  ███████
+        # ██    ██      ██ ██      ██   ██      ██
+        #  ██████  ███████ ███████ ██   ██ ███████
+
+
+
 class UserIndex:
     # user list
 
@@ -48,11 +66,17 @@ class UserIndex:
     def returnall(self):
         return [self.username, self.comment, self.servername]
 
+        # ██   ██ ██      ███████ ██   ██
+        #  ██ ██  ██      ██       ██ ██
+        #   ███   ██      ███████   ███
+        #  ██ ██  ██           ██  ██ ██
+        # ██   ██ ███████ ███████ ██   ██
+
 
 class XLSmode:
     # create clsx file
 
-    def __init__(self, datax="None", filename=str(datetime.datetime.now())+".xlsx"):
+    def __init__(self, datax="None", filename=str(datetime.datetime.now()) + ".xlsx"):
         self.datax = datax
         self.filename = filename
         self.create_file()
@@ -92,28 +116,35 @@ class XLSmode:
 
         workbook.close
 
+        # ██ ████████ ███████ ██████
+        # ██    ██    ██      ██   ██
+        # ██    ██    █████   ██████
+        # ██    ██    ██      ██   ██
+        # ██    ██    ███████ ██   ██
+
 
 class IterParser(FilesName, UserIndex, XLSmode):
     # general class
 
-    def __init__(self, patch,foutp):
+    def __init__(self, patch, foutp):
         self.start1 = FilesName(patch)
         self.filelist = self.start1.ReturnTuple()
         self.serversc = []
         self.UserList = []
         self.iterfillist()
-        self.foutp=foutp
-        #print len(self.foutp)
+        self.foutp = foutp
+        # print len(self.foutp)
         # self.testa=[["aa","aa","aa"],["bb","bb","bb"]]
-        #self.foutp=str(datetime.datetime.now())+".xlsx" if len(self.foutp)==0 else print self.foutp
-        #print len(self.foutp)
-        # initiate clsass XLSmode in paramter list of list [[],[],[]] logs and pach to file
+        # self.foutp=str(datetime.datetime.now())+".xlsx" if len(self.foutp)==0 else print self.foutp
+        # print len(self.foutp)
+        # initiate clsass XLSmode in paramter list of list [[],[],[]] logs and
+        # pach to file
         try:
             len(self.foutp)
         except:
-            self.foutp=str(datetime.datetime.now())+".xlsx"
+            self.foutp = str(datetime.datetime.now()) + ".xlsx"
 
-        self.createxls = XLSmode(self.listoflist(),self.foutp)
+        self.createxls = XLSmode(self.listoflist(), self.foutp)
 
     def printUserList(self):
         for iuser in self.UserList:
@@ -126,6 +157,12 @@ class IterParser(FilesName, UserIndex, XLSmode):
             self.listlist.append(
                 [iuser.servername, iuser.username, iuser.comment])
         return self.listlist
+
+        # ███████ ██ ██      ███████ ███████      ██████  ██████  ██████  ███████ ███    ██
+        # ██      ██ ██      ██      ██          ██    ██ ██   ██ ██   ██ ██      ████   ██
+        # █████   ██ ██      █████   ███████     ██    ██ ██████  ██████  █████   ██ ██  ██
+        # ██      ██ ██      ██           ██     ██    ██ ██      ██      ██      ██  ██ ██
+        # ██      ██ ███████ ███████ ███████      ██████  ██      ██      ███████ ██   ████
 
     def iterfillist(self):
             # Iterate files by name and
@@ -174,18 +211,37 @@ class IterParser(FilesName, UserIndex, XLSmode):
         # cut nameserver from patch to file
         return os.path.basename(line[:line.rfind('.')])
 
+        #  █████  ██████   ██████  ██████   █████  ██████  ███████ ███████
+        # ██   ██ ██   ██ ██       ██   ██ ██   ██ ██   ██ ██      ██
+        # ███████ ██████  ██   ███ ██████  ███████ ██████  ███████ █████
+        # ██   ██ ██   ██ ██    ██ ██      ██   ██ ██   ██      ██ ██
+        # ██   ██ ██   ██  ██████  ██      ██   ██ ██   ██ ███████ ███████
+
 
 class Startapp(IterParser):
 
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description='Simple scipt for conver  logs from many servers to one XLSX file . Script work only witch perl output from another(pp_parser_batch) script  ')
-        self.parser.add_argument('-l', '--logs', help='Input the path to log files direcotry', required=True)
-        self.parser.add_argument('-o', '--output', help='Input outputfilename',required=False)
+        self.parser = argparse.ArgumentParser(
+            description='Simple scipt for conver  logs from many servers to one XLSX file . Script work only witch perl output from another(pp_parser_batch) script  ')
+        self.parser.add_argument(
+            '-l', '--logs', help='Input the path to log files direcotry', required=True)
+        self.parser.add_argument(
+            '-o', '--output', help='Input outputfilename', required=False)
         self.args = self.parser.parse_args()
-        self.startpraser=IterParser(self.args.logs,self.args.output)
+        self.startpraser = IterParser(self.args.logs, self.args.output)
 # Startapp=FilesName("logs")
 # Startapp.displayFileList() v
+
+
+# ███████ ████████  █████  ██████  ████████      █████  ██████  ██████
+# ██         ██    ██   ██ ██   ██    ██        ██   ██ ██   ██ ██   ██
+# ███████    ██    ███████ ██████     ██        ███████ ██████  ██████
+#      ██    ██    ██   ██ ██   ██    ██        ██   ██ ██      ██
+# ███████    ██    ██   ██ ██   ██    ██        ██   ██ ██      ██
+
+
 Startapp = Startapp()
+
 
 #Startapp = IterParser("logs")
 
