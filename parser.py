@@ -3,6 +3,11 @@ import re
 import glob
 import os
 import xlsxwriter
+import sys
+import argparse
+import datetime
+import string
+__author__ = 'SmFjZWsgWmFsZXNraQo='
 
 
 class FilesName:
@@ -47,7 +52,7 @@ class UserIndex:
 class XLSmode:
     # create clsx file
 
-    def __init__(self, datax="None", filename="test.xlsx"):
+    def __init__(self, datax="None", filename=str(datetime.datetime.now())+".xlsx"):
         self.datax = datax
         self.filename = filename
         self.create_file()
@@ -79,9 +84,10 @@ class XLSmode:
         worksheet.write('B1', heading2, header_format)
         worksheet.write('C1', heading3, header_format)
         worksheet.autofilter('A1:D11')
-        worksheet.autofilter(0, 0, len(self.datax), 2)
+        worksheet.freeze_panes(1, 0)
+        worksheet.autofilter(0, 0, len(self.datax) + 1, 2)
         for i, varxlsx in enumerate(self.datax):
-            print i + 1, varxlsx
+            # print i + 1, varxlsx
             worksheet.write_row(i + 1, 0, tuple(varxlsx), text_format)
 
         workbook.close
@@ -90,16 +96,24 @@ class XLSmode:
 class IterParser(FilesName, UserIndex, XLSmode):
     # general class
 
-    def __init__(self, patch):
+    def __init__(self, patch,foutp):
         self.start1 = FilesName(patch)
         self.filelist = self.start1.ReturnTuple()
         self.serversc = []
         self.UserList = []
         self.iterfillist()
+        self.foutp=foutp
+        #print len(self.foutp)
         # self.testa=[["aa","aa","aa"],["bb","bb","bb"]]
-        self.listoflist()
-        # initiate clsass XLSmode
-        self.createxls = XLSmode(self.listoflist(), "Name.xlsx")
+        #self.foutp=str(datetime.datetime.now())+".xlsx" if len(self.foutp)==0 else print self.foutp
+        #print len(self.foutp)
+        # initiate clsass XLSmode in paramter list of list [[],[],[]] logs and pach to file
+        try:
+            len(self.foutp)
+        except:
+            self.foutp=str(datetime.datetime.now())+".xlsx"
+
+        self.createxls = XLSmode(self.listoflist(),self.foutp)
 
     def printUserList(self):
         for iuser in self.UserList:
@@ -112,7 +126,6 @@ class IterParser(FilesName, UserIndex, XLSmode):
             self.listlist.append(
                 [iuser.servername, iuser.username, iuser.comment])
         return self.listlist
-
 
     def iterfillist(self):
             # Iterate files by name and
@@ -162,9 +175,19 @@ class IterParser(FilesName, UserIndex, XLSmode):
         return os.path.basename(line[:line.rfind('.')])
 
 
+class Startapp(IterParser):
+
+    def __init__(self):
+        self.parser = argparse.ArgumentParser(description='Simple scipt for conver  logs from many servers to one XLSX file . Script work only witch perl output from another(pp_parser_batch) script  ')
+        self.parser.add_argument('-l', '--logs', help='Input the path to log files direcotry', required=True)
+        self.parser.add_argument('-o', '--output', help='Input outputfilename',required=False)
+        self.args = self.parser.parse_args()
+        self.startpraser=IterParser(self.args.logs,self.args.output)
 # Startapp=FilesName("logs")
-# Startapp.displayFileList()
-Startapp = IterParser("logs")
+# Startapp.displayFileList() v
+Startapp = Startapp()
+
+#Startapp = IterParser("logs")
 
 
 # Startapp.printUserList()
