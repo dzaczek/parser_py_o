@@ -45,13 +45,15 @@ class UserIndex:
 
 
 class XLSmode:
-    #create clsx file
+    # create clsx file
+
     def __init__(self, datax="None", filename="test.xlsx"):
         self.datax = datax
         self.filename = filename
         self.create_file()
-        self.row=1
-        self.col=1
+        self.row = 1
+        self.col = 1
+
     def create_file(self):
         workbook = xlsxwriter.Workbook(self.filename)
         worksheet = workbook.add_worksheet()
@@ -63,8 +65,8 @@ class XLSmode:
             'valign': 'vcenter',
             'indent': 1,
         })
-        text_format=workbook.add_format({
-        'border': 1,
+        text_format = workbook.add_format({
+            'border': 1,
 
         })
     # Write the header cells and some data that will be used in the examples.
@@ -76,14 +78,16 @@ class XLSmode:
         worksheet.write('A1', heading1, header_format)
         worksheet.write('B1', heading2, header_format)
         worksheet.write('C1', heading3, header_format)
-        for i ,varxlsx in enumerate(self.datax):
-            print i+1, varxlsx
-            worksheet.write_row(i+1,0,tuple(varxlsx),text_format)
+        worksheet.autofilter('A1:D11')
+        worksheet.autofilter(0, 0, len(self.datax), 2)
+        for i, varxlsx in enumerate(self.datax):
+            print i + 1, varxlsx
+            worksheet.write_row(i + 1, 0, tuple(varxlsx), text_format)
 
         workbook.close
 
 
-class IterParser(FilesName, UserIndex,XLSmode):
+class IterParser(FilesName, UserIndex, XLSmode):
     # general class
 
     def __init__(self, patch):
@@ -92,15 +96,26 @@ class IterParser(FilesName, UserIndex,XLSmode):
         self.serversc = []
         self.UserList = []
         self.iterfillist()
-        self.testa=[["aa","aa","aa"],["bb","bb","bb"]]
-        #initiate clsass XLSmode
-        self.createxls=XLSmode(self.testa,"Name.xlsx")
+        # self.testa=[["aa","aa","aa"],["bb","bb","bb"]]
+        self.listoflist()
+        # initiate clsass XLSmode
+        self.createxls = XLSmode(self.listoflist(), "Name.xlsx")
+
     def printUserList(self):
         for iuser in self.UserList:
             print "%s \"%s\" %s" % (iuser.servername, iuser.username, iuser.comment)
 
-    # Iterate files by name .....
+    def listoflist(self):
+            # convert UserList data to tuple of tuple
+        self.listlist = []
+        for iuser in self.UserList:
+            self.listlist.append(
+                [iuser.servername, iuser.username, iuser.comment])
+        return self.listlist
+
+
     def iterfillist(self):
+            # Iterate files by name and
         for indexm, patchvar in enumerate(self.filelist):
             # print indexm, patchvar
             self.workservername = self.nameserver(patchvar)
@@ -152,4 +167,4 @@ class IterParser(FilesName, UserIndex,XLSmode):
 Startapp = IterParser("logs")
 
 
-#Startapp.printUserList()
+# Startapp.printUserList()
